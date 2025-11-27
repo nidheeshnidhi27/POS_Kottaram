@@ -79,11 +79,16 @@ public class KOTHandler {
                 String formattedText = formatKOTText(response, objectDetails);
 
                 // 🔥 *** NEW LOGIC : Decide number of copies ***
+
+                int kotPrintCopies = response.getJSONArray("printsettings")
+                        .getJSONObject(0)
+                        .optInt("kot_print_copies", 1); // default 1
+
                 int copies;
-                if (printerId == 9) {
-                    copies = 1;      // Print once
+                if (key.equals("8")) {
+                    copies = 1;
                 } else {
-                    copies = 3;      // Print 3 times
+                    copies = kotPrintCopies;      // Print 3 times
                 }
 
                 Log.d("KOTHandler", "Printer ID " + printerId + " → copies = " + copies);

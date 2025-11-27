@@ -30,16 +30,27 @@ public class MainsAwayHandler {
         String customerName = data.optString("customer_name", "Walk In Customer");
         String waiterName = data.optString("waiter_name", "");
         int orderNo = data.optInt("order_no", 0);
+
+        String orderType = data.optString("order_type", "");
+
+        String tableNo = data.optString("tableno", "");
+        int seatNo = data.optInt("table_seats", 0);
         String message = data.optString("message_print", "MAINS AWAY");
 
         text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("KOT :Kitchen", true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
         text.append("Date: ").append(orderTime).append("\n");
         text.append("Customer: ").append(customerName).append("\n");
         text.append("Served by: ").append(waiterName).append("\n\n");
-        text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Takeaway #" + orderNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+
+        if(orderType.equals("dinein")) {
+            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Table: " + tableNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Seats: " + seatNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+        }else{
+            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText(orderType+" "+orderNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+        }
         text.append("Message from POS:\n");
         text.append("-----------------------------------------\n");
-        text.append(ESC_FONT_SIZE_LARGE).append(centerText(message, true)).append(ESC_FONT_SIZE_RESET).append("\n");
+        text.append(ESC_FONT_SIZE_LARGE).append(centerText(message,true)).append(ESC_FONT_SIZE_RESET).append("\n");
         text.append("-----------------------------------------\n\n");
         text.append(ESC_FONT_SIZE_MEDIUM).append(centerText("*** KITCHEN COPY ***", true)).append(ESC_FONT_SIZE_RESET).append("\n");
 

@@ -138,9 +138,16 @@ public class BackgroundPrintService extends IntentService {
                                         throw new JSONException("Invalid type for details: must be JSONObject or JSONArray");
                                     }
 
+                                    int invoicePrintCopies = response.getJSONArray("printsettings")
+                                            .getJSONObject(0)
+                                            .optInt("invoice_print_copies", 1); // default 1
+
                                     byte[] formattedBytes = payableHandler.formatOnlinePayableBytes();
-                                    PrintConnection_PAY printConnection = new PrintConnection_PAY(printerIP, printerPort, formattedBytes);
-                                    printConnection.execute();
+//   TODO _NEW invoice print count based on api
+                                    for (int i = 0; i < invoicePrintCopies; i++) {
+                                        PrintConnection_PAY printConnection = new PrintConnection_PAY(printerIP, printerPort, formattedBytes);
+                                        printConnection.execute();
+                                    }
 
                                 } else {
                                     Log.e("PrintError", "No valid printer IP found in printersetup.");
@@ -174,14 +181,23 @@ public class BackgroundPrintService extends IntentService {
                                     }
                                 }
 
+                                int invoicePrintCopies = response.getJSONArray("printsettings")
+                                        .getJSONObject(0)
+                                        .optInt("invoice_print_copies", 1); // default 1
+
+
                                 if (!printerIP.isEmpty()) {
 
                                     JSONObject restSettings = response.has("rest_settings") ? response.getJSONObject("rest_settings") : new JSONObject();
                                     PayableHandler payableHandler = new PayableHandler(this, payData, outlets, details, printerIP, printerPort, type, restSettings, params);
 
                                     byte[] formattedBytes = payableHandler.formatPayableBytes(); // Now returns byte[]
-                                    PrintConnection_PAY printConnection = new PrintConnection_PAY(printerIP, printerPort, formattedBytes);
-                                    printConnection.execute();
+                                    // 🔥 Execute printing multiple times
+//   TODO _NEW invoice print count based on api
+                                    for (int i = 0; i < invoicePrintCopies; i++) {
+                                        PrintConnection_PAY printConnection = new PrintConnection_PAY(printerIP, printerPort, formattedBytes);
+                                        printConnection.execute();
+                                    }
 
                                 } else {
                                     Log.e("PrintError", "No valid printer IP found in printersetup.");
