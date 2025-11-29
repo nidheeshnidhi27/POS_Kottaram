@@ -44,8 +44,25 @@ public class KOTHandlerOnline {
                 // Format the text for the current detail object
                 String formattedText = formatOnlineKOTText(response, objectDetails);
                 // Create a new PrintConnection instance and execute
-                PrintConnection printConnection = new PrintConnection(printerIP, printerPort, formattedText);
-                printConnection.execute();
+
+                int kotPrintCopies = response.getJSONArray("printsettings")
+                        .getJSONObject(0)
+                        .optInt("kot_print_copies", 1); // default 1
+
+                int copies;
+                if (key.equals("8")) {
+                    copies = 1;
+                } else {
+                    copies = kotPrintCopies;      // Print 3 times
+                }
+
+                Log.d("KOTHandler", "Printer ID " + printerId + " → copies = " + copies);
+
+                // 🔥 Execute printing multiple times
+                for (int i = 0; i < copies; i++) {
+                    PrintConnection printConnection = new PrintConnection(printerIP, printerPort, formattedText);
+                    printConnection.execute();
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "Error handling KOT", e);
@@ -101,8 +118,23 @@ public class KOTHandlerOnline {
                 formattedText.append("\nServed by: ").append(waiter);
             }
             if (type.equals("dinein")) {
-                formattedText.append("\n").append(ESC_FONT_SIZE_LARGE).append(tableno).append(ESC_FONT_SIZE_RESET);
-                formattedText.append("\nSeats: ").append(tableSeats);
+
+                if (tableno != null &&
+                        !tableno.trim().isEmpty() &&
+                        !tableno.equalsIgnoreCase("null")) {
+
+                    formattedText.append("\n")
+                            .append(ESC_FONT_SIZE_LARGE)
+                            .append("Table: " ).append(tableno)
+                            .append(ESC_FONT_SIZE_RESET);
+                    formattedText.append("\nSeats: ").append(tableSeats);
+                } else {
+                    formattedText.append("\nTable: -");
+                    formattedText.append("\nSeats: -");
+                }
+
+                /*formattedText.append("\n").append(ESC_FONT_SIZE_LARGE).append(tableno).append(ESC_FONT_SIZE_RESET);
+                formattedText.append("\nSeats: ").append(tableSeats);*/
             }
 
             formattedText.append("\n\n")
@@ -158,6 +190,21 @@ public class KOTHandlerOnline {
                     .append(orderDetails.optString("instruction")).append("\n")
                     .append("-".repeat(45)).append("\n");
 
+            String deliveryTime = orderDetails.optString("deliverytime", "");
+
+            if (deliveryTime != null &&
+                    !deliveryTime.trim().isEmpty() &&
+                    !deliveryTime.equalsIgnoreCase("null")) {
+
+                formattedText.append(ESC_FONT_SIZE_MEDIUM)
+                        .append("Requested for: ")
+                        .append(deliveryTime)
+                        .append(ESC_FONT_SIZE_RESET)
+                        .append("\n")
+                        .append("-".repeat(45))
+                        .append("\n");
+
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error formatting KOT text", e);
         }

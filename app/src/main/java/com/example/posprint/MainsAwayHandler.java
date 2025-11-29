@@ -43,8 +43,20 @@ public class MainsAwayHandler {
         text.append("Served by: ").append(waiterName).append("\n\n");
 
         if(orderType.equals("dinein")) {
-            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Table: " + tableNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
-            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Seats: " + seatNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+
+            if (tableNo != null &&
+                    !tableNo.trim().isEmpty() &&
+                    !tableNo.equalsIgnoreCase("null")) {
+
+                text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Table: " + tableNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+                text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Seats: " + seatNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+            } else {
+                text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Table: -", true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+                text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Seats: -", true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+            }
+
+//            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Table: " + tableNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
+//            text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText("Seats: " + seatNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
         }else{
             text.append(new String(ESC_FONT_SIZE_LARGE)).append(centerText(orderType+" "+orderNo, true)).append(new String(ESC_FONT_SIZE_RESET)).append("\n\n");
         }
